@@ -108,7 +108,7 @@ public class PanelEnvironment extends JPanel{
 			Cell c0 = ent.getStart();
 			for(Cell c1:solution)
 			{
-				g2d.drawLine(c0.getX() * depX + depX/2, c0.getY() * depY + depY/2, c1.getX() * depX + depX/2, c1.getY()  * depY + depY/2);
+				g2d.fillOval(c0.getX() * depX +2, c0.getY() * depY +2, depX-3, depY-3);
 				c0 = c1;
 			}
 		}

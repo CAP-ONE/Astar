@@ -78,7 +78,7 @@ public class AlgoAStar {
 			closedNodes.add(n);
 			
 			// construct the list of neighbourgs
-			ArrayList<Cell> nextDoorNeighbours  = neighbours(n);
+			ArrayList<Cell> nextDoorNeighbours  = neighbours4(n);
 			for(Cell ndn:nextDoorNeighbours)
 			{
 				// if the neighbour has been visited, do not reevaluate it
@@ -87,6 +87,8 @@ public class AlgoAStar {
 				// cost to reach the neighbour is the cost to reach n + cost from n to the neighbourg
 				
 				int cost = n.getG() + costBetween(n, ndn);
+				
+				//System.out.println("cost : "+cost);
 				
 				boolean bestCost = false;
 				// if the neighbour has not been evaluated
@@ -98,8 +100,10 @@ public class AlgoAStar {
 					ndn.setH(evaluation(ndn));
 					bestCost = true;
 				}
+				
+				
 				else
-					// if the neighbour has been evaluated to a more important cost, change its evaluation
+					 //if the neighbour has been evaluated to a more important cost, change its evaluation
 					if (cost < ndn.getG())
 						bestCost = true;
 				if(bestCost)
@@ -110,6 +114,8 @@ public class AlgoAStar {
 					//TODO : g(ndn) <- cost
 					//TODO : f(ndn) <- g(ndn) + h(ndn)
 				}
+				
+				
 			}
 		}
 		return null;
@@ -170,9 +176,6 @@ public class AlgoAStar {
 				   if(rhs.getF() > lhs.getF()) return -1;
 				   
 				   return 0;
-			     //TODO return 1 if rhs should be before lhs 
-			     //     return -1 if lhs should be before rhs
-			     //     return 0 otherwise
 			     }
 			 });
 		
@@ -203,12 +206,13 @@ public class AlgoAStar {
 	ArrayList<Cell> neighboursDiag(Cell n)
 	{
 		ArrayList<Cell> diagNodes = new ArrayList<Cell>();
+		
 		for(int i=0; i<ent.getWidth(); i++) {
 			for(int j=0; j<ent.getHeight(); j++) {
 				Cell neigh = ent.getCell(i, j);
 
 				int nx = neigh.getX(); int ny = neigh.getY();
-				int sx = start.getX() ; int sy = start.getY();
+				int sx = n.getX() ; int sy = n.getY();
 
 				if((nx==sx && ny==sy+1) || (nx==sx+1 && ny==sy+1) || (nx==sx+1 && ny==sy) || (nx==sx+1 && ny==sy-1) 
 						|| (nx==sx && ny==sy-1) || (nx==sx-1 && ny==sy-1) || (nx==sx-1 && ny==sy) || (nx==sx-1 && ny==sy+1)) {
@@ -221,10 +225,10 @@ public class AlgoAStar {
 
 
 		System.out.println("Start node x: " +start.getX()+" y: "+start.getY());
-
-		for(Cell diag : diagNodes) {
-			System.out.println("Diag node x: " +diag.getX()+" y: "+diag.getY());
-		}
+//
+//		for(Cell diag : diagNodes) {
+//			System.out.println("Diag node x: " +diag.getX()+" y: "+diag.getY());
+//		}
 
 		return diagNodes;
 	}
@@ -232,9 +236,28 @@ public class AlgoAStar {
 	/** return the neighbouring of a node n without permission to go in diagonal*/
 	ArrayList<Cell> neighbours4(Cell n)
 	{
-		// TODO: (en reponse au 2e cas)
+		ArrayList<Cell> diagNodes = new ArrayList<Cell>();
+		
+		for(int i=0; i<ent.getWidth(); i++) {
+			for(int j=0; j<ent.getHeight(); j++) {
+				Cell neigh = ent.getCell(i, j);
 
-		return null;
+				int nx = neigh.getX(); int ny = neigh.getY();
+				int sx = n.getX() ; int sy = n.getY();
+
+				if((nx==sx && ny==sy+1) || (nx==sx+1 && ny==sy) 
+						|| (nx==sx && ny==sy-1) || (nx==sx-1 && ny==sy)) {
+					if (neigh.isContainer()) continue;
+					diagNodes.add(neigh);
+				}
+			}
+		}
+
+
+		System.out.println("Start node x: " +start.getX()+" y: "+start.getY());
+
+
+		return diagNodes;
 	}
 
 	/** return the cost from n to c : 10 for a longitudinal move, 14 (squareroot(2)*10) for a diagonal move */
